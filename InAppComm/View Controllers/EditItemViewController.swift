@@ -8,8 +8,16 @@
 
 import UIKit
 
+protocol EditItemViewControllerDelegate {
+    
+    func shouldAdd(item: String)
+}
+
 
 class EditItemViewController: UIViewController {
+    
+    var delegate: EditItemViewControllerDelegate!
+   
 
     // MARK: - IBOutlet Properties
     
@@ -74,6 +82,17 @@ class EditItemViewController: UIViewController {
     // MARK: - IBAction Methods
     
     @IBAction func saveItem(_ sender: Any) {
+        
+        guard let text = textField.text else {
+            return
+        }
+        
+        if text != "" {
+            if let delegate = delegate {
+                delegate.shouldAdd(item: text)
+            }
+            navigationController?.popViewController(animated: true)
+        }
         
     }
     

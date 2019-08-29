@@ -65,6 +65,8 @@ class ShoppingListViewController: UIViewController {
             if identifier == "idShowEditItemViewControllerSegue" {
                 if let editItemVC = segue.destination as? EditItemViewController {
                     
+                    editItemVC.delegate = self
+                    
                     if let index = selectedItemIndex {
                         editItemVC.editedItem = shoppingList.items[index]
                     }
@@ -143,6 +145,14 @@ extension ShoppingListViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 68.0
+    }
+    
+}
+
+extension ShoppingListViewController: EditItemViewControllerDelegate {
+    func shouldAdd(item: String) {
+        shoppingList.items.append(item)
+        tableView.reloadData()
     }
 }
 
