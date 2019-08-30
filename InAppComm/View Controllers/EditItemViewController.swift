@@ -11,6 +11,8 @@ import UIKit
 protocol EditItemViewControllerDelegate {
     
     func shouldAdd(item: String)
+    
+    func isItemPresent(item: String) -> Bool 
 }
 
 
@@ -89,12 +91,25 @@ class EditItemViewController: UIViewController {
         
         if text != "" {
             if let delegate = delegate {
-                delegate.shouldAdd(item: text)
+                if !delegate.isItemPresent(item: text) {
+                    // Item doesn't exist in the items collection,
+                    // so let's add it now.
+                    delegate.shouldAdd(item: text)
+                    navigationController?.popViewController(animated: true)
+                    
+                } else {
+                    // Item exists already in the items collection.
+                    // Show an alert to indicate that.
+                    let alert = UIAlertController(title: "Item exists", message: "\(text) already exists in your shopping list.", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    present(alert, animated: true, completion: nil)
+                }
             }
-            navigationController?.popViewController(animated: true)
-        }
+            
         
     }
+    }
+
     
     
     @IBAction func deleteItem(_ sender: Any) {
