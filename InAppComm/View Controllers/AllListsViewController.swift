@@ -26,12 +26,28 @@ class AllListsViewController: UIViewController {
     
     
     
+    @objc func handleDidCreateShoppingList(notification: Notification) {
+        if let items = notification.object as? [String] {
+            let newShoppingList = ShoppingList(id: listManager.getNextListID(),
+                                               name: "Shopping List",
+                                               editTimestamp: Date.timeIntervalSinceReferenceDate,
+                                               items: items)
+            
+            listManager.add(list: newShoppingList)
+            tableView.reloadData()
+        }
+    }
+    
+    
+    
     // MARK: - View Init Methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleDidCreateShoppingList(notification:)), name: .didCreateShoppingList, object: nil)
         
     }
     
