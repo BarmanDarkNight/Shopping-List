@@ -40,6 +40,16 @@ class AllListsViewController: UIViewController {
     
     
     
+    @objc func handleDidUpdateShoppingList(notification: Notification) {
+        if let userInfo = notification.userInfo {
+            if let id = userInfo["id"] as? Int, let items = userInfo["items"] as? [String] {
+                listManager.updateItems(inListWithID: id, items: items)
+                tableView.reloadData()
+            }
+        }
+    }
+    
+    
     // MARK: - View Init Methods
     
     override func viewDidLoad() {
@@ -48,6 +58,8 @@ class AllListsViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleDidCreateShoppingList(notification:)), name: .didCreateShoppingList, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleDidUpdateShoppingList(notification:)), name: .didUpdateShoppingList, object: nil)
         
     }
     
@@ -58,6 +70,10 @@ class AllListsViewController: UIViewController {
         
         setupTableView()
         selectedListIndex = nil
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     
